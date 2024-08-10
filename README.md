@@ -3,3 +3,4 @@ Project developed during [master of programming and software design](https://esc
 
 ## MPDS-JAVASCRIPT branch
 Checkout this branch for manager developed with **javascript**
+- Console (in module console-mpds) has been programed by teacher for educational purposes.
