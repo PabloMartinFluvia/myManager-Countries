@@ -1,6 +1,6 @@
 import * as https from 'https';
 
-getBordersInfo('USA', showCountriesDensityOrError);
+getBordersInfo('FRA', showCountriesDensityOrError);
 
 function getBordersInfo(code, continuation) {
 
@@ -16,20 +16,20 @@ function getBordersInfo(code, continuation) {
     }
 
     function requestBorders(codes) {
-        let bordersCountries = [];        
-        let i = 0;
-        getCountryInfo(codes[i], evalBorder);
-
+        let bordersCountries = [];  
+        let stop = false;
+        for (let code of codes) {
+            getCountryInfo(code, evalBorder);
+        }
+        
         function evalBorder(borderCountry, error) {     
-            if(!error) {
+            if(!error && !stop) {
                 bordersCountries.push(borderCountry);
-                if (bordersCountries.length < codes.length) {
-                    i++;
-                    getCountryInfo(codes[i], evalBorder);
-                } else {
+                if (bordersCountries.length < codes.length) {                    
                     continuation(bordersCountries);
                 }
             } else {
+                stop = true;
                 continuation(undefined, error);
             }
         }        
