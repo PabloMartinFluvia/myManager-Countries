@@ -8,17 +8,19 @@ function getBordersInfo(code, continuation) {
         if (!error) {
             const bordersCodes = country.borders;
             let bordersCountries = [];
-            let stop = false;
+            let ok = true;
             for (let code of bordersCodes) {
                 getCountryInfo(code, (borderCountry, error) => {
-                    if (!error && !stop) {
-                        bordersCountries.push(borderCountry);
-                        if (bordersCountries.length < bordersCodes.length) {
-                            continuation(bordersCountries);
+                    if (ok) {
+                        if (!error) {
+                            bordersCountries.push(borderCountry);
+                            if (bordersCountries.length === bordersCodes.length) {
+                                continuation(bordersCountries);
+                            }
+                        } else {
+                            ok = false;
+                            continuation(undefined, error);
                         }
-                    } else {
-                        stop = true;
-                        continuation(undefined, error);
                     }
                 });
             }
@@ -27,7 +29,7 @@ function getBordersInfo(code, continuation) {
         }
     });
 
-    
+
 }
 
 function getCountryInfo(code, continuation) {

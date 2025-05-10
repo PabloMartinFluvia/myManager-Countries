@@ -4,9 +4,9 @@ getBordersInfo('FRA', showCountriesDensityOrError);
 
 function getBordersInfo(code, continuation) {
 
-    getCountryInfo(code, evalCountryRequest);
+    getCountryInfo(code, evalCountryOrError);
 
-    function evalCountryRequest(country, error) {
+    function evalCountryOrError(country, error) {
         if (!error) {
             const bordersCodes = country.borders;
             requestBorders(bordersCodes);
@@ -15,28 +15,30 @@ function getBordersInfo(code, continuation) {
         }
     }
 
-    function requestBorders(codes) {
-        let bordersCountries = [];  
-        let stop = false;
-        for (let code of codes) {
-            getCountryInfo(code, evalBorder);
+    function requestBorders(bordersCodes) {
+        let bordersCountries = [];
+        let ok = true;
+        for (let code of bordersCodes) {
+            getCountryInfo(code, evalBorderCountryOrError);
         }
-        
-        function evalBorder(borderCountry, error) {     
-            if(!error && !stop) {
-                bordersCountries.push(borderCountry);
-                if (bordersCountries.length < codes.length) {                    
-                    continuation(bordersCountries);
+
+        function evalBorderCountryOrError(borderCountry, error) {
+            if (ok) {
+                if (!error) {
+                    bordersCountries.push(borderCountry);
+                    if (bordersCountries.length === bordersCodes.length) {
+                        continuation(bordersCountries);
+                    }
+                } else {
+                    ok = false;
+                    continuation(undefined, error);
                 }
-            } else {
-                stop = true;
-                continuation(undefined, error);
             }
-        }        
+        }
     }
 }
 
-function getCountryInfo(code, continuation) {    
+function getCountryInfo(code, continuation) {
     const url = `https://restcountries.com/v3.1/alpha/${code}`;
     https
         .get(url, evalResponse)
