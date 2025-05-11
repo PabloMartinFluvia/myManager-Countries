@@ -1,6 +1,6 @@
 import * as https from 'https';
 
-getBordersInfo('FRA', showCountriesDensityOrError);
+getBordersInfo('ESP', showCountriesDensityOrError);
 
 function getBordersInfo(code, continuation) {
 
@@ -60,7 +60,7 @@ function getCountryInfo(code, continuation) {
                 continuation(country);
             } else {
                 continuation(undefined, new Error(`País con código ${code} no encontrado`));
-            }
+            }            
         }
 
     }
@@ -73,20 +73,22 @@ function getCountryInfo(code, continuation) {
 function showCountriesDensityOrError(countries, error) {
     if (!error) {
         console.log(`Païses fronterizos:`)
+        let accu = 0;
         for (let i = 0; i < countries.length; i++) {
-            const country = countries[i];
+            const country = countries[i];            
             console.log(`${i + 1}) ${country.name.common}:`);
-            showDensity(country);
-        }
+            country.density = Number.parseFloat((country.population / country.area).toFixed(2));            
+            accu += country.density;         
+            showResume(country);
+        }        
+        console.log(`La densidad media es de ${(accu / countries.length).toFixed(2)}  hab/km2\n`);
     } else {
         console.log(`Error: ${error.message}\n`);
     }
 }
 
-function showDensity(country) {
-    const population = country.population;
-    console.log(`\tPoblación: ${population} hab`);
-    const area = country.area;
-    console.log(`\tTamaño: ${area} km2`);
-    console.log(`\tDensidad: ${(population / area).toFixed(2)} hab/km2\n`);
+function showResume(country) {    
+    console.log(`\tPoblación: ${country.population} hab`);    
+    console.log(`\tTamaño: ${country.area} km2`);
+    console.log(`\tDensidad: ${country.density} hab/km2\n`);
 }
