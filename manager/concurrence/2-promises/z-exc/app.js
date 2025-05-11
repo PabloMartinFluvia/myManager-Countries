@@ -55,7 +55,7 @@ getBordersInfo("ESP")
             const country = countries[i];
             country.density = Number.parseFloat((country.population / country.area).toFixed(2));
             accu += country.density;
-            showResume(country);
+            showResume(country, i);
         }
         console.log(`La densidad media es de ${(accu / countries.length).toFixed(2)}  hab/km2\n`);
     })

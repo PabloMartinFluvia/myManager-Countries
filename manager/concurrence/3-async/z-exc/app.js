@@ -42,9 +42,9 @@ async function main() {
     let accu = 0;
     for (let i = 0; i < countries.length; i++) {
       const country = countries[i];
-      country.density = Number.parseFloat((country.population / country.area).toFixed(2));
+      country.density = country.population / country.area;
       accu += country.density;
-      showResume(country);
+      showResume(country, i);
     }
     console.log(`La densidad media es de ${(accu / countries.length).toFixed(2)}  hab/km2\n`);
   } catch (err) {
@@ -56,7 +56,7 @@ function showResume(country, i) {
   console.log(`${i + 1}) ${country.name.common}:`);
   console.log(`\tPoblación: ${country.population} hab`);
   console.log(`\tTamaño: ${country.area} km2`);
-  console.log(`\tDensidad: ${country.density} hab/km2\n`);
+  console.log(`\tDensidad: ${country.density.toFixed(2)} hab/km2\n`);
 }
 
 main();
